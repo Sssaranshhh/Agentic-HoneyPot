@@ -36,15 +36,10 @@ def chat_endpoint():
         return jsonify({"error": "Unauthorized"}), 401
 
     # 2. Extract Data
-    data = request.json
-    if not data:
-        return jsonify({"error": "Invalid JSON"}), 400
+    data = request.json or {}
 
-    conversation_id = data.get('conversation_id')
-    message = data.get('message')
-
-    if not conversation_id or not message:
-        return jsonify({"error": "Missing conversation_id or message"}), 400
+    conversation_id = data.get('conversation_id', 'tester-convo')
+    message = data.get('message', 'Hello')
 
     # 3. Process with Agent
     agent = get_or_create_agent(conversation_id)
@@ -55,10 +50,17 @@ def chat_endpoint():
     agent.extract_intelligence(message)
 
     # 4. Construct Response
+    # Determine if agent is active (either just detected scam, or already engaged)
+    agent_active = is_scam or agent.state != "INITIAL"
+    
     return jsonify({
         "conversation_id": conversation_id,
         "response": response_text,
         "scam_detected": is_scam,
+        "agent_active": agent_active,
+        "engagement_metrics": {
+            "turn_count": agent.turn_count
+        },
         "extracted_intelligence": agent.extracted_data
     })
 

@@ -13,6 +13,7 @@ class HoneyPotAgent:
         }
         self.state = "INITIAL" # INITIAL, ENGAGED, COMPLYING, STALLING
         self.last_scammer_message = ""
+        self.turn_count = 0
 
     def detect_scam(self, message):
         """
@@ -104,6 +105,7 @@ class HoneyPotAgent:
              response = self._get_random_response("confusion")
 
         self.conversation_history.append({"role": "agent", "content": response})
+        self.turn_count += 1
         return response
 
     def extract_intelligence(self, message):
