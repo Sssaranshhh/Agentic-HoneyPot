@@ -15,11 +15,18 @@ def test_api():
     url = "http://localhost:5000/chat"
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "Bearer secret-demo-key"
+        "Authorization": "Bearer hackathon-2026-secret"
     }
     
-    # 1. First msg
-    data = {"conversation_id": "test_123", "message": "You won the lottery!"}
+    # 1. First msg - Bank Scam
+    data = {
+        "sessionId": "test_bank_1", 
+        "message": {
+            "sender": "scammer",
+            "text": "Your bank account will be blocked today.",
+            "timestamp": 1769776085000
+        }
+    }
     req = urllib.request.Request(url, data=json.dumps(data).encode(), headers=headers)
     
     try:
@@ -29,8 +36,11 @@ def test_api():
     except Exception as e:
         print("Error 1:", e)
 
-    # 2. Second msg (Reply CLAIM)
-    data = {"conversation_id": "test_123", "message": "Reply CLAIM to win."}
+    # 2. Second msg (Reply CLAIM) - String format
+    data = {
+        "sessionId": "test_123", 
+        "message": "Reply CLAIM to win."
+    }
     req = urllib.request.Request(url, data=json.dumps(data).encode(), headers=headers)
     
     try:
