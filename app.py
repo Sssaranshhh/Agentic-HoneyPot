@@ -15,6 +15,10 @@ def get_or_create_agent(conversation_id):
         conversations[conversation_id] = HoneyPotAgent(persona="naive_elderly")
     return conversations[conversation_id]
 
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({"status": "healthy"}), 200
+
 @app.route('/chat', methods=['POST'])
 def chat_endpoint():
     # 1. Authentication
