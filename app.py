@@ -22,9 +22,15 @@ def health_check():
 @app.route('/chat', methods=['POST'])
 def chat_endpoint():
     # 1. Authentication
-    auth_header = request.headers.get('Authorization')
-    # Support "Bearer <KEY>" or just "<KEY>" for flexibility during testing
-    provided_key = auth_header.replace("Bearer ", "") if auth_header else ""
+    auth_header = (
+        request.headers.get('Authorization')
+        or request.headers.get('x-api-key')
+    )
+
+    if not auth_header:
+        return jsonify({"error": "Unauthorized"}), 401
+
+    provided_key = auth_header.replace("Bearer ", "")
     
     if provided_key != API_KEY:
         return jsonify({"error": "Unauthorized"}), 401
